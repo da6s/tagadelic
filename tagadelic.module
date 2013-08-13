@@ -1,6 +1,7 @@
 <?php
+
 /**
- * @file tagadelic.module
+ * @file
  * Library to build tagclouds.
  * @author Bèr Kessels <ber@webschuur.com>
  * @link http://berk.es

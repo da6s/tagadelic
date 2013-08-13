@@ -77,7 +77,7 @@ class TagadelicTag {
 
   /**
    * Returns the weight, getter only.
-   *   Will call recalculate to calculate the weight.
+   *   Will call recalculateTagWeights to calculate the weight.
    * @ingroup getters
    * return Float the weight of this tag.
    **/

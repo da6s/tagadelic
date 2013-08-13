@@ -1,0 +1,5 @@
+name: Tagadelic
+description: 'Tagadelic makes weighted tag clouds from any weighted list.'
+core: 7.x
+dependencies: taxonomy
+package: "Taxonomy"

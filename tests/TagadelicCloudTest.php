@@ -43,42 +43,42 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers TagadelicCloud::get_id
+   * @covers TagadelicCloud::getId
    */
   public function testGet_id() {
-    $this->assertEquals(1337, $this->object->get_id());
+    $this->assertEquals(1337, $this->object->getId());
   }
 
   /**
-   * @covers TagadelicCloud::get_tags
+   * @covers TagadelicCloud::getTags
    * Tests if get_Tags returns an array only.
    */
   public function testGet_tags() {
     $this->object = new TagadelicCloud(1337, $this->mock_tags);
-    $this->assertSame($this->mock_tags, $this->object->get_tags());
+    $this->assertSame($this->mock_tags, $this->object->getTags());
   }
 
   /**
-   * @covers TagadelicCloud::add_tag
+   * @covers TagadelicCloud::addTag
    */
   public function testAdd_tag() {
-    $this->object->add_tag($this->mock_tags["blackbeard"]);
+    $this->object->addTag($this->mock_tags["blackbeard"]);
     $this->assertAttributeContains($this->mock_tags["blackbeard"], "tags", $this->object);
   }
 
   /**
-   * @covers TagadelicCloud::add_tag()
+   * @covers TagadelicCloud::add_tag(addTag
    */
   public function testAdd_tagIsChainable() {
-    $this->assertEquals($this->object->add_tag($this->mock_tags["blackbeard"]), $this->object);
+    $this->assertEquals($this->object->addTag($this->mock_tags["blackbeard"]), $this->object);
   }
 
   /**
-   * @covers TagadelicCloud::set_drupal()
+   * @covers TagadelicCloud::set_drupal(setDrupal
    */
   public function testSet_drupal() {
     $drupal = new StdClass();
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
     $this->assertAttributeSame($drupal, "drupal", $this->object);
   }
 
@@ -87,7 +87,7 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
    */
   public function testDrupalReturnsSetValue() {
     $drupal = "ThisIsDrupal";
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
     $this->assertSame($this->object->drupal(), $drupal);
   }
 
@@ -95,13 +95,13 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
    * @covers TagadelicCloud::drupal()
    */
   public function testDrupalInstantiatesNewWrapper() {
-    $this->object->set_drupal(NULL);
+    $this->object->setDrupalWrapper(NULL);
     $drupal = $this->getMock("TagadelicDrupalWrapper");
     $this->assertInstanceOf("TagadelicDrupalWrapper", $this->object->drupal());
   }
 
   /**
-   * @covers tagadeliccloud::from_cache
+   * @covers tagadeliccloud::fromCache
    */
   public function testfrom_cache() {
     $drupal = $this->getMock("TagadelicDrupalWrapper", array("cache_get"));
@@ -109,21 +109,21 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
       ->method("cache_get")
       ->with("tagadelic_cloud_1337")
       ->will($this->returnvalue($this->object));
-    $cloud = TagadelicCloud::from_cache(1337, $drupal);
+    $cloud = TagadelicCloud::fromCache(1337, $drupal);
     $this->assertinstanceof("TagadelicCloud", $cloud);
   }
 
   /**
-   * @covers tagadeliccloud::to_cache
+   * @covers tagadeliccloud::toCache
    */
   public function testTo_cache() {
     $drupal = $this->getMock("TagadelicDrupalWrapper", array("cache_set"));
     $drupal->expects($this->once())
       ->method("cache_set")
       ->with("tagadelic_cloud_1337", $this->object);
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
 
-    $this->object->to_cache();
+    $this->object->toCache();
   }
 
   /**
@@ -138,7 +138,7 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
       $mocks[] = $mock_tag;
     }
     $this->object = new TagadelicCloud(1337, $mocks);
-    $this->object->get_tags();
+    $this->object->getTags();
   }
 
   /**
@@ -170,20 +170,20 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
        $mocks[] = $mock;
     }
     $this->object = new TagadelicCloud(1337, $mocks);
-    $this->object->get_tags();
+    $this->object->getTags();
   }
 
   /**
    * Default is not sorted
    **/
   public function testNotSorted() {
-    $this->object->add_tag($this->addTagStub("bill", "William Kidd", 100));
-    $this->object->add_tag($this->addTagStub("cheung", "Cheung Po Tsai", 20));
+    $this->object->addTag($this->addTagStub("bill", "William Kidd", 100));
+    $this->object->addTag($this->addTagStub("cheung", "Cheung Po Tsai", 20));
 
     $expected_order = array("William Kidd", "Cheung Po Tsai");
     $given_order = array();
 
-    foreach($this->object->get_tags() as $tag) {
+    foreach($this->object->getTags() as $tag) {
       $given_order[] = $tag->get_name();
     }
 
@@ -196,17 +196,17 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
   public function testSortByName() {
     $drupal = $this->getMock("TagadelicDrupalWrapper", array("check_plain"));
     $drupal->expects($this->any())->method("check_plain")->will($this->returnArgument(0));
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
 
-    $this->object->add_tag($this->addTagStub("bill", "William Kidd", 100));
-    $this->object->add_tag($this->addTagStub("cheung", "Cheung Po Tsai", 20));
+    $this->object->addTag($this->addTagStub("bill", "William Kidd", 100));
+    $this->object->addTag($this->addTagStub("cheung", "Cheung Po Tsai", 20));
 
     $expected_order = array("Cheung Po Tsai", "William Kidd");
     $given_order = array();
 
     $this->object->sort("name");
 
-    foreach($this->object->get_tags() as $tag) {
+    foreach($this->object->getTags() as $tag) {
       $given_order[] = $tag->get_name();
     }
 
@@ -225,14 +225,14 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
   public function testSortByNameWithInternationalCharacters() {
     $drupal = $this->getMock("TagadelicDrupalWrapper", array("check_plain"));
     $drupal->expects($this->any())->method("check_plain")->will($this->returnArgument(0));
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
 
-    $this->object->add_tag($this->addTagStub("ae", "Ä", 10));
-    $this->object->add_tag($this->addTagStub("oe", "Ö", 20));
-    $this->object->add_tag($this->addTagStub("ue", "Ü", 30));
-    $this->object->add_tag($this->addTagStub("u", "U", 40));
-    $this->object->add_tag($this->addTagStub("o", "O", 50));
-    $this->object->add_tag($this->addTagStub("a", "A", 60));
+    $this->object->addTag($this->addTagStub("ae", "Ä", 10));
+    $this->object->addTag($this->addTagStub("oe", "Ö", 20));
+    $this->object->addTag($this->addTagStub("ue", "Ü", 30));
+    $this->object->addTag($this->addTagStub("u", "U", 40));
+    $this->object->addTag($this->addTagStub("o", "O", 50));
+    $this->object->addTag($this->addTagStub("a", "A", 60));
 
     $expected_order = array("A", "Ä", "O", "Ö", "U", "Ü");
     $given_order = array();
@@ -240,7 +240,7 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
     setlocale(LC_COLLATE, 'de_DE.utf8');
     $this->object->sort("name");
 
-    foreach($this->object->get_tags() as $tag) {
+    foreach ($this->object->getTags() as $tag) {
       $given_order[] = $tag->get_name();
     }
 
@@ -253,17 +253,17 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
   public function testSortByCount() {
     $drupal = $this->getMock("TagadelicDrupalWrapper", array("check_plain"));
     $drupal->expects($this->any())->method("check_plain")->will($this->returnArgument(0));
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
 
-    $this->object->add_tag($this->addTagStub("bill", "William Kidd", 100));
-    $this->object->add_tag($this->addTagStub("cheung", "Cheung Po Tsai", 200));
+    $this->object->addTag($this->addTagStub("bill", "William Kidd", 100));
+    $this->object->addTag($this->addTagStub("cheung", "Cheung Po Tsai", 200));
 
     $expected_order = array("Cheung Po Tsai", "William Kidd");
     $given_order = array();
 
     $this->object->sort("count");
 
-    foreach($this->object->get_tags() as $tag) {
+    foreach ($this->object->getTags() as $tag) {
       $given_order[] = $tag->get_name();
     }
 
@@ -277,7 +277,7 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
     $drupal = $this->getMock("TagadelicDrupalWrapper", array("shuffle"));
     $drupal->expects($this->once())
       ->method("shuffle");
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
 
     $this->object->sort("random");
   }

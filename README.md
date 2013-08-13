@@ -36,7 +36,7 @@ An example:
 
     $cloud = new TagadelicCloud("Pirettes", array($anne, $sadie, $mary));
 
-    foreach($cloud->get_tags() as $tag) {
+    foreach($cloud->getTags() as $tag) {
       print $tag;
     }
     ?>

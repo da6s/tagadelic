@@ -44,11 +44,11 @@ function tagadelic_taxonomy_get_cloud($max_amount) {
     $tag = new TagadelicTag($term->tid, $term->name, $term->count);
     $tag->set_link("taxonomy/term/{$term->tid}");
 
-    $cloud->add_tag($tag);
+    $cloud->addTag($tag);
   }
 
   # Because now here wer're returning an array, not HTML.
-  return $cloud->get_tags();
+  return $cloud->getTags();
 }
 
 function tagadelic_taxonomy_theme($existing, $type, $theme, $path) {

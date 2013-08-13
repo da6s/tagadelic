@@ -1,28 +1,60 @@
 <?php
-/**
- * class TagadelicCloud
- *   TagadelicCloud, contains a list of tags and methods to manipulate
- *   this set of tags.
- *   It can operate on the list of tags.
- */
-class TagadelicCloud {
-  private $id = ""; # An identifier for this cloud. Must be unique.
-  private $tags = array(); # List of the tags in this cloud.
-  private $steps        = 6;  #Amount of steps to weight the cloud in. Defaults to 6. Means: 6 different sized tags.
-  private $needs_recalc = true;
 
-  public $fuck_locale = "";
+/**
+ * @file
+ * Contains TagadelicCloud.
+ */
+
+class TagadelicCloud {
 
   /**
-   * Initalize the cloud
+   * An identifier for this cloud. Must be unique.
    *
-   * @param id Integer, identifies this cloud; used for caching and 
-   *        re-fetching of previously built clouds.
-   * @param tags Array, provide tags on building. Tags can be added 
-   *        later on, using `add_tag()` method.
+   * @var int|string
+   */
+  protected $id = "";
+
+  /**
+   * List of the tags in this cloud.
+   *
+   * @var array
+   */
+  protected $tags = array();
+
+  /**
+   * Amount of steps to weight the cloud in. Defaults to 6.
+   *
+   * @var int
+   */
+  protected $steps = 6;
+
+  /**
+   * Flag to indicate whether to recalculateTagWeights the tag weights.
+   *
+   * @var bool
+   */
+  protected $needsRecalc = TRUE;
+
+  /**
+   * An instance of TagadelicDrupalWrapper. Used primarily for testing purposes.
+   *
+   * @var TagadelicDrupalWrapper
+   */
+  protected $drupalWrapper;
+
+  /**
+   * Initalize the cloud.
+   *
+   * @param int $id
+   *   Integer, identifies this cloud; used for caching and re-fetching of
+   *   previously built clouds.
+   *
+   * @param array $tags
+   *   Provide tags on building. Tags can be added later, using $this->addTag().
+   *
    * @return TagadelicCloud.
    */
-  function __construct($id, $tags = array()) {
+  public function __construct($id, $tags = array()) {
     $this->id = $id;
     $this->tags = $tags;
   }
@@ -32,7 +64,7 @@ class TagadelicCloud {
    * @ingroup getters
    * @returns Integer id of this cloud
    */
-  public function get_id() {
+  public function getId() {
     return $this->id;
   }
 
@@ -41,8 +73,8 @@ class TagadelicCloud {
    * @ingroup getters
    * @returns Array list of tags
    */
-  public function get_tags() {
-    $this->recalculate();
+  public function getTags() {
+    $this->recalculateTagWeights();
     return $this->tags;
   }
 
@@ -53,74 +85,93 @@ class TagadelicCloud {
    *
    * return $this, for chaining.
    */
-  public function add_tag($tag) {
+  public function addTag($tag) {
     $this->tags[] = $tag;
     return $this;
   }
 
   /**
-   * setter for drupal(wrapper). Mostly for testability
-   * Operates on $this
-   * Returns $this
+   * Sets $this->drupalWrapper to an instance of TagadelicDrupalWrapper.
+   *
+   * @param TagadelicDrupalWrapper $wrapper
+   *   A mock Drupal instance to use for testing.
+   *
+   * @return TagadelicCloud
+   *   The current instance of TagadelicCloud.
    */
-  public function set_drupal($drupal) {
-    $this->drupal = $drupal;
+  public function setDrupalWrapper($wrapper) {
+    $this->drupalWrapper = $wrapper;
     return $this;
   }
 
   /**
-   * Getter for drupal
-   * @return DrupalWrapper value in $this::$drupal.
+   * Get an instance of TagadelicDrupalWrapper.
+   *
+   * @return TagadelicDrupalWrapper
+   *   Value in $this->drupal.
    */
-  public function drupal() {
-    if (empty($this->drupal)) {
-      $this->drupal = new TagadelicDrupalWrapper();
+  public function getDrupalWrapper() {
+    if (empty($this->drupalWrapper)) {
+      $this->setDrupalWrapper(new TagadelicDrupalWrapper());
     }
-    return $this->drupal;
+    return $this->drupalWrapper;
   }
 
   /**
-   * Instantiate $this from cache
-   * Optionally pass $drupal, a Drupalwrapper along, mostly for testing.
-   * Returns this
+   * Instantiate an instance of TagadelicCloud from the cache.
+   *
+   * @param int $id
+   *   The id of the TagadelicCloud instance to retrieve from the cache.
+   * @param stdObject $drupal
+   *   The current Drupal instance.
+   *
+   * @return TagadelicCloud
+   *   A new instance from the cache.
    */
-  public static function from_cache($id, $drupal) {
+  public static function fromCache($id, $drupal) {
     $cache_id = "tagadelic_cloud_{$id}";
     return $drupal->cache_get($cache_id);
   }
 
   /**
-   * Writes the cloud to cache. Will recalculate if needed.
-   * @return $this; for chaining.
+   * Writes the cloud to cache. Will recalculateTagWeights if needed.
+   *
+   * @return TagadelicCloud
+   *   The current instance.
    */
-  public function to_cache() {
+  public function toCache() {
     $cache_id = "tagadelic_cloud_{$this->id}";
     $this->drupal()->cache_set($cache_id, $this);
     return $this;
   }
 
   /**
-   * Sorts the tags by given property.
-   * @return $this; for chaining.
+   * Sorts the tags by a given property.
+   *
+   * @param string $property
+   *   The property to sort the tags on.
+   *
+   * @return TagadelicCloud
+   *   The current instance of TagadelicCloud.
    */
-  public function sort($by_property) {
-    if ($by_property == "random") {
-      $this->drupal()->shuffle($this->tags);
+  public function sortTagsBy($property) {
+    if ($property == "random") {
+      $this->getDrupalWrapper()->shuffle($this->tags);
     }
     else {
-      //Bug in PHP https://bugs.php.net/bug.php?id=50688, lets supress the error.
-      @usort($this->tags, array($this, "cb_sort_by_{$by_property}"));
+      // PHP Bug: https://bugs.php.net/bug.php?id=50688 - Supress the error.
+      @usort($this->tags, array($this, "sortBy{$property}"));
     }
     return $this;
   }
 
   /**
-   * (Re)calculates the weights on the tags.
-   * @param $recalculate. Optional flag to enfore recalculation of the weights for the tags in this cloud.
-   *        defaults to FALSE, meaning the value will be calculated once per cloud.
-   *  @return $this; for chaining
+   * Recalculates the weights of tags.
+   *
+   * @return TagadelicCloud
+   *   The current instance of TagadelicCloud, for chaining?
    */
-  private function recalculate() {
+  protected function recalculateTagWeights() {
     $tags = array();
     // Find minimum and maximum log-count.
     $min = 1e9;
@@ -139,17 +190,39 @@ class TagadelicCloud {
     return $this;
   }
 
-  private function cb_sort_by_name($a, $b) {
+  /**
+   * Sort by name.
+   *
+   * @param string $a
+   *   A string.
+   * @param string $b
+   *   Another string.
+   *
+   * @return int
+   *   <0 if $a is less than $b, >0 if $b is less than $a, 1 if they are equal.
+   */
+  protected function sortByName($a, $b) {
     return strcoll($a->get_name(), $b->get_name());
   }
 
-  private function cb_sort_by_count($a, $b) {
+  /**
+   * Sort by count.
+   *
+   * @param int $a
+   *   An integer.
+   * @param int $b
+   *   Another integer.
+   *
+   * @return int
+   *   <0 if $a is less than $b, >0 if $b is less than $a, 1 if they are equal.
+   */
+  protected function sortByCount($a, $b) {
     $ac = $a->get_count();
     $bc = $b->get_count();
     if ($ac == $bc) {
       return 0;
     }
-    //Highest first, High to low
-    return ($ac < $bc) ? +1 : -1;
+    // Highest first, High to low.
+    return ($ac < $bc) ? 1 : -1;
   }
 }
