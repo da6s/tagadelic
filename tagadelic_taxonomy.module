@@ -42,7 +42,7 @@ function tagadelic_taxonomy_get_cloud($max_amount) {
 
   foreach (tagadelic_taxonomy_tags_from_db($max_amount) as $term) {
     $tag = new TagadelicTag($term->tid, $term->name, $term->count);
-    $tag->set_link("taxonomy/term/{$term->tid}");
+    $tag->setLink("taxonomy/term/{$term->tid}");
 
     $cloud->addTag($tag);
   }

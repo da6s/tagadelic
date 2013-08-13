@@ -132,7 +132,7 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
   public function testGetCalculatedTags() {
     foreach ($this->mock_tags as $mock_tag) {
       $mock_tag->expects($this->once())
-        ->method('set_weight')
+        ->method('setWeight')
         ->with($this->greaterThan(0))
         ->will($this->returnSelf());
       $mocks[] = $mock_tag;
@@ -161,9 +161,9 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
     $i = 1;
 
     foreach($assert_table as $assertion) {
-       $mock = $this->getMock("TagadelicTag", array("set_weight"), array($i++, $assertion[0], $assertion[1]));
+       $mock = $this->getMock("TagadelicTag", array("setWeight"), array($i++, $assertion[0], $assertion[1]));
        $mock->expects($this->once())
-        ->method("set_weight")
+        ->method("setWeight")
         ->with($assertion[2])
         ->will($this->returnSelf());
 
@@ -286,13 +286,13 @@ class TagadelicCloudTest extends PHPUnit_Framework_TestCase {
    * Creates a stub for a tag
    */
   private function addTagStub($id, $name, $count) {
-    $stub = $this->getMock("TagadelicTag", array("get_name", "get_count", "set_weight"), array($id, $name, $count));
+    $stub = $this->getMock("TagadelicTag", array("getName", "getCount", "setWeight"), array($id, $name, $count));
 
     $stub->expects($this->any())
-      ->method("get_name")
+      ->method("getName")
       ->will($this->returnValue($name));
     $stub->expects($this->any())
-      ->method("get_count")
+      ->method("getCount")
       ->will($this->returnValue($count));
 
     $this->mock_tags[$id] = $stub;

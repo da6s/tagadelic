@@ -12,56 +12,56 @@ require_once "TagadelicTagTest.php";
  */
 class TagadelicTagMethodsTest extends TagadelicTagTest {
   /**
-   * @covers TagadelicTag::get_id
+   * @covers TagadelicTag::getId
    */
   public function testGet_id() {
-    $this->assertSame(42, $this->object->get_id());
+    $this->assertSame(42, $this->object->getId());
   }
 
   /**
-   * @covers TagadelicTag::get_name
+   * @covers TagadelicTag::getName
    */
   public function testGet_name() {
-    $this->assertSame("blackbeard", $this->object->get_name());
+    $this->assertSame("blackbeard", $this->object->getName());
   }
 
   /**
-   * @covers TagadelicTag::get_description
+   * @covers TagadelicTag::getDescription
    */
   public function testGet_description() {
-    $this->object->set_description("Foo Bar");
-    $this->assertSame("Foo Bar", $this->object->get_description());
+    $this->object->setDescription("Foo Bar");
+    $this->assertSame("Foo Bar", $this->object->getDescription());
   }
 
   /**
-   * @covers TagadelicTag::get_weight
+   * @covers TagadelicTag::getWeight
    */
   public function testGet_weight() {
-    $this->object->set_weight(123);
-    $this->assertSame(123, $this->object->get_weight());
+    $this->object->setWeight(123);
+    $this->assertSame(123, $this->object->getWeight());
   }
 
   /**
-   * @covers TagadelicTag::get_weight
+   * @covers TagadelicTag::getWeight
    */
   public function testGet_count() {
-    $this->assertSame(2, $this->object->get_count());
+    $this->assertSame(2, $this->object->getCount());
   }
 
   /**
-   * @covers TagadelicTag::set_weight
+   * @covers TagadelicTag::setWeight
    */
   public function testSet_weight() {
-    $this->object->set_weight(123);
+    $this->object->setWeight(123);
     $this->assertAttributeSame(123, "weight", $this->object);
   }
 
   /**
-   * @covers TagadelicTag::set_drupal
+   * @covers TagadelicTag::setDrupalWrapper
    */
   public function testSet_drupal() {
     $drupal = $this->getMock("TagaDelicDrupalWrapper");
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
     $this->assertAttributeSame($drupal, "drupal", $this->object);
   }
 
@@ -70,7 +70,7 @@ class TagadelicTagMethodsTest extends TagadelicTagTest {
    */
   public function testDrupal() {
     $drupal = $this->getMock("TagaDelicDrupalWrapper");
-    $this->object->set_drupal($drupal);
+    $this->object->setDrupalWrapper($drupal);
     $this->assertSame($this->object->drupal(), $drupal);
   }
 
@@ -78,39 +78,39 @@ class TagadelicTagMethodsTest extends TagadelicTagTest {
    * @covers TagadelicTag::drupal
    */
   public function testDrupalInstatiatesNewWrapper() {
-    $this->object->set_drupal(NULL);
+    $this->object->setDrupalWrapper(NULL);
     $this->assertInstanceOf("TagaDelicDrupalWrapper", $this->object->drupal());
   }
 
   /**
-   * @covers TagadelicTag::set_description
+   * @covers TagadelicTag::setDescription
    */
   public function testSet_description() {
-    $this->object->set_description("Foo Bar");
+    $this->object->setDescription("Foo Bar");
     $this->assertAttributeSame("Foo Bar", "description", $this->object);
   }
 
   /**
-   * @covers TagadelicTag::set_link
+   * @covers TagadelicTag::setLink
    */
   public function testSet_link() {
-    $this->object->set_link("tag/blackbeard");
+    $this->object->setLink("tag/blackbeard");
     $this->assertAttributeSame("tag/blackbeard", "link", $this->object);
   }
 
   /**
-   * @covers TagadelicTag::force_dirty
+   * @covers TagadelicTag::forceDirty
    */
   public function testForce_dirty() {
-    $this->object->force_dirty();
+    $this->object->forceDirty();
     $this->assertAttributeSame(TRUE, "dirty", $this->object);
   }
 
   /**
-   * @covers TagadelicTag::force_clean
+   * @covers TagadelicTag::forceClean
    */
   public function testForce_clean() {
-    $this->object->force_clean();
+    $this->object->forceClean();
     $this->assertAttributeSame(FALSE, "dirty", $this->object);
   }
 
@@ -121,11 +121,11 @@ class TagadelicTagMethodsTest extends TagadelicTagTest {
     $drupal = $this->getMock("TagaDelicDrupalWrapper");
     $drupal->expects($this->exactly(2))->method("check_plain");
 
-    $this->object->set_drupal($drupal);
-    $this->object->force_dirty();
+    $this->object->setDrupalWrapper($drupal);
+    $this->object->forceDirty();
 
-    $this->object->get_name();
-    $this->object->get_description();
+    $this->object->getName();
+    $this->object->getDescription();
   }
 
   /**
@@ -135,11 +135,11 @@ class TagadelicTagMethodsTest extends TagadelicTagTest {
     $drupal = $this->getMock("TagaDelicDrupalWrapper");
     $drupal->expects($this->never())->method("check_plain");
 
-    $this->object->set_drupal($drupal);
-    $this->object->force_clean();
+    $this->object->setDrupalWrapper($drupal);
+    $this->object->forceClean();
 
-    $this->object->get_name();
-    $this->object->get_description();
+    $this->object->getName();
+    $this->object->getDescription();
   }
   /**
    * @covers TagadelicTag::distributed

@@ -1,96 +1,149 @@
 <?php
+
 /**
- * class TagadelicTag
- *   TagadelicTag contains the tag itself.
+ * @file
+ * Contains TagadelicTag.
  */
+
 class TagadelicTag {
-  private $id   = 0;         # Identifier of this tag
-  private $name = "";        # A human readable name for this tag.
-  private $description = ""; # A human readable piece of HTML-formatted text.
-
-  private $link = "";        # Where this tag will point to. If left empty, tag will not be linked. Can be a full url too.
-  private $count = 0.0000001;# Absolute count for the weight. Weight, i.e. tag-size will be extracted from this.
-  private $dirty = true;
-
-  private $weight = 0.0;
-
-  private $drupal = NULL;    # Contains the DrupalWrapper, mostly for testablity
 
   /**
-   * Initalize this tag
-   * @param id Integer the identifier of this tag
-   * @param name String a human readable name describing this tag
+   * Identifier of this tag.
+   *
+   * @var int
    */
-  function __construct($id, $name, $count) {
+  protected $id = 0;
+
+  /**
+   * A human readable name for this tag.
+   *
+   * @var string
+   */
+  protected $name = "";
+
+  /**
+   * A human readable piece of HTML-formatted text.
+   *
+   * @var string
+   */
+  protected $description = "";
+
+  /**
+   * Where this tag will point to. If left empty, tag will not be linked. Can be a full url too.
+   *
+   * @var string
+   */
+  protected $link = "";
+
+  /**
+   * Absolute count for the weight. Weight, i.e. tag-size will be extracted from this.
+   *
+   * @var float
+   */
+  protected $count = 0.0000001;
+
+  /**
+   * Flag to toggle XSS filtering of text fields.
+   *
+   * @var bool
+   */
+  protected $isDirty = TRUE;
+
+  /**
+   * @todo What purpose does this property do?
+   *
+   * @var float
+   */
+  protected $weight = 0.0;
+
+  /**
+   * Contains the DrupalWrapper, mostly for testablity.
+   *
+   * @var null
+   */
+  protected $drupalWrapper = NULL;
+
+  /**
+   * Initalizes a new TagadelicTag.
+   *
+   * @param int $id
+   *   The identifier of this tag.
+   * @param string $name
+   *   A human readable name describing this tag.
+   * @param int $count
+   *   The count of the tag, used to calculate the weight.
+   */
+  protected function __construct($id, $name, $count) {
     $this->id    = $id;
     $this->name  = $name;
-    if($count != 0) {
+    if ($count != 0) {
       $this->count = $count;
     }
   }
 
   /**
-   * Magic method to render the Tag.
-   *  turns the tag into an HTML link to its source.
+   * Renders the Tag as an HTML link to its source.
    */
-  public function __ToString() {
+  protected function render() {
     $this->clean();
-
     $attributes = $options = array();
 
-    if (!empty($this->description)) $attributes["title"]   = $this->description;
-    if ($this->weight > 0)          $attributes["class"][] = "level{$this->weight}";
+    $attributes["title"] = !empty($this->description) ? $this->description : '';
+    $attributes["class"][] = $this->weight > 0 ? "level{$this->weight}" : '';
+    $options["attributes"] = !empty($attributes) ? $attributes : array();
 
-    if (!empty($attributes)) $options["attributes"] = $attributes;
-
-    return $this->drupal()->l($this->name, $this->link, $options);
+    return $this->getDrupalWrapper()->l($this->name, $this->link, $options);
   }
 
   /**
-   * Getter for the ID
-   * @ingroup getters
-   * return Integer Identifier
-   **/
-  public function get_id() {
+   * Gets the ID of the current tag.
+   *
+   * @return int
+   *   The identifier for this tag.
+   */
+  protected function getId() {
     return $this->id;
   }
 
   /**
-   * Getter for the name
-   * @ingroup getters
-   * return String the human readable name
-   **/
-  public function get_name() {
+   * Gets the name property.
+   *
+   * @return string
+   *   The human readable name.
+   */
+  protected function getName() {
     $this->clean();
     return $this->name;
   }
 
   /**
-   * Getter for the description
-   * @ingroup getters
-   * return String the human readable description
-   **/
-  public function get_description() {
+   * Gets the description property.
+   *
+   * @return string
+   *   The human readable description.
+   */
+  protected function getDescription() {
     $this->clean();
     return $this->description;
   }
 
   /**
-   * Returns the weight, getter only.
-   *   Will call recalculateTagWeights to calculate the weight.
-   * @ingroup getters
-   * return Float the weight of this tag.
-   **/
-  public function get_weight() {
+   * Gets the weight of current tag.
+   *
+   * @return float
+   *   The weight of this tag.
+   */
+  protected function getWeight() {
     return $this->weight;
   }
 
   /**
-   * Returns the count, getter only.
-   * @ingroup getters
-   * return Int the count as provided when Initializing the Object.
-   **/
-  public function get_count() {
+   * Gets the count of the current tag.
+   *
+   * @return int
+   *   The count as provided when initializing the object.
+   */
+  protected function getCount() {
     return $this->count;
   }
 
@@ -99,83 +152,88 @@ class TagadelicTag {
    * A tag may have a description
    * @param $description String a description
    */
-  public function set_description($description) {
+  protected function setDescription($description) {
     $this->description = $description;
   }
 
   /**
-   * Link to a resource.
-   * @param link String Optional a link to a resource that represents
-   *        the tag. e.g. a listing with all things tagged with Tag, or
-   *        the article that represents the tag.
+   * Sets the HTML for a link to a resource.
+   *
+   * @param string $link
+   *   A link to a resource that represents the tag. e.g. a listing with all
+   *   things tagged with Tag, or the article that represents the tag.
    */
-  public function set_link($link) {
+  protected function setLink($link) {
     $this->link = $link;
   }
 
   /**
-   * setter for weight
-   * Operates on $this
-   * Returns $this
+   * Sets the weight for a tag.
+   *
+   * @param int $weight
+   *   The weight of the tag.
+   *
+   * @return TagadelicTag
+   *   The current instance of TagadelicTag.
    */
-  public function set_weight($weight) {
+  protected function setWeight($weight) {
     $this->weight = $weight;
     return $this;
   }
 
   /**
-   * setter for drupal(Wrapper)
-   * Operates on $this
-   * Returns $this
+   * Sets $this->drupalWrapper to an instance of TagadelicDrupalWrapper.
+   *
+   * @param TagadelicDrupalWrapper $wrapper
+   *   An instance of TagadelicDrupalWrapper.
+   *
+   * @return TagadelicTag
+   *   The current instance of TagadelicTag.
    */
-  public function set_drupal($drupal) {
-    $this->drupal = $drupal;
+  protected function setDrupalWrapper($wrapper) {
+    $this->drupalWrapper = $wrapper;
     return $this;
   }
+
   /**
-   * Getter for drupal, if not found, will instantiate a default TagaDelicDrupalWrapper
-   * @return type value in $this::$drupal.
+   * Gets an instance of TagadelicDrupalWrapper, creating a new one if needed.
+   *
+   * @return TagadelicDrupalWrapper
+   *   An instance of TagadelicDrupalWrapper.
    */
-  public function drupal() {
-    if (empty($this->drupal)) {
-      $this->drupal = new TagaDelicDrupalWrapper();
+  protected function getDrupalWrapper() {
+    if (empty($this->drupalWrapper)) {
+      $this->setDrupalWrapper(new TagaDelicDrupalWrapper());
     }
-    return $this->drupal;
+    return $this->drupalWrapper;
   }
 
   /**
-   * Flag $name and $description as dirty; none-cleaned.
-   *  BEWARE! This will probably lead to double escaping, unless you know what you are doing.
+   * Flags the tag to be filtered for XSS through TagadelicTag::clean().
+   *
+   * @param bool $value
+   *   If TRUE, $name and $description will be filtered for XSS.
    */
-  public function force_dirty() {
-    $this->dirty = true;
-  }
-
-  /**
-   * Flag $name and $description as safe.
-   *  XSS-escaping and sanitizing is left to implementer.
-   *  BEWARE! Only enforce when you know what you are doing. Seriously!
-   */
-  public function force_clean() {
-    $this->dirty = false;
+  protected function setDirty($value) {
+    $this->isDirty = $value;
   }
 
   /**
    * Calculates a more evenly distributed value.
    */
-  public function distributed() {
+  protected function distributed() {
     return log($this->count);
   }
 
   /**
-    * Utility, to enforce XSS filtering on strings before they are
-    * printed or returned.
-    **/
-  private function clean() {
-    if ($this->dirty) {
-      $this->name = $this->drupal()->check_plain($this->name);
-      $this->description = $this->drupal()->check_plain($this->description);
-      $this->force_clean();
+   * Filters strings for XSS.
+   */
+  protected function clean() {
+    if ($this->isDirty) {
+      $this->name = $this->getDrupalWrapper()->check_plain($this->name);
+      $this->description = $this->getDrupalWrapper()->check_plain($this->description);
+      $this->forceClean();
     }
   }
+
 }

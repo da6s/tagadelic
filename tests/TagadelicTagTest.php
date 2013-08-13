@@ -22,7 +22,7 @@ class TagadelicTagTest extends PHPUnit_Framework_TestCase {
                  ->method('check_plain')
                  ->will($this->returnArgument(0));
     $this->object = new TagadelicTag(42, "blackbeard", 2);
-    $this->object->set_drupal($this->drupal);
+    $this->object->setDrupalWrapper($this->drupal);
   }
 
   /**

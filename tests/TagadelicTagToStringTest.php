@@ -31,7 +31,7 @@ class TagadelicTagToStringTest extends TagadelicTagTest {
    */
   public function test__ToStringHasLink() {
     $link = '/foo/bar';
-    $this->object->set_link($link);
+    $this->object->setLink($link);
 
     $this->drupal->expects($this->any())
          ->method('l')
@@ -47,7 +47,7 @@ class TagadelicTagToStringTest extends TagadelicTagTest {
    * @covers tagadelictag::__tostring
    */
   public function test__ToStringHasTitle() {
-    $this->object->set_description("Foo Bar");
+    $this->object->setDescription("Foo Bar");
     $expected_attrs = array("title" => "Foo Bar");
 
     $this->drupal->expects($this->any())
@@ -65,7 +65,7 @@ class TagadelicTagToStringTest extends TagadelicTagTest {
    * @covers tagadelictag::__tostring
    */
   public function test__ToStringHasNoTitle() {
-    $this->object->set_description("");
+    $this->object->setDescription("");
 
     $this->drupal->expects($this->any())
         ->method('l')
@@ -82,7 +82,7 @@ class TagadelicTagToStringTest extends TagadelicTagTest {
    * @covers tagadelictag::__tostring
    */
   public function test__ToStringHasWeight() {
-    $this->object->set_weight(3);
+    $this->object->setWeight(3);
     $expected_attrs = array("class" => array("level3"));
 
     $this->drupal->expects($this->any())
@@ -100,7 +100,7 @@ class TagadelicTagToStringTest extends TagadelicTagTest {
    * @covers tagadelictag::__tostring
    */
   public function test__ToStringHasNoWeight() {
-    $this->object->set_weight(0);
+    $this->object->setWeight(0);
 
     $this->drupal->expects($this->any())
         ->method('l')
