@@ -1,6 +1,12 @@
 <?php
 
-require_once 'DrupalWrapper.php';
+/**
+ * @file
+ * Contains Drupal\tagadelic\Tests\TagadelicDrupalWrapperTest.
+ */
+
+namespace Drupal\tagadelic\Tests;
+
 class TagadelicDrupalWrapperTest extends PHPUnit_Framework_TestCase {
   /**
    * @var TagadelicDrupalWrapper

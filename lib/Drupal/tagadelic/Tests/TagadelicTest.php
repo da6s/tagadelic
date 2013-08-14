@@ -1,6 +1,13 @@
 <?php
 
-class TagadelicTestCase extends DrupalWebTestCase {
+/**
+ * @file
+ * Contains Drupal\tagadelic\Tests\TagadelicTest.
+ */
+
+namespace Drupal\tagadelic\Tests;
+
+class TagadelicTest extends DrupalWebTestCase {
   /**
    * getInfo sets information about this test
    *

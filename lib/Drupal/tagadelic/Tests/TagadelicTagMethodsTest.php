@@ -1,7 +1,11 @@
-
 <?php
 
-require_once "TagadelicTagTest.php";
+/**
+ * @file
+ * Contains Drupal\tagadelic\Tests\TagadelicTagMethodsTest.
+ */
+
+namespace Drupal\tagadelic\Tests;
 
 /**
  * Class TagadelicTagMethodsTest
@@ -11,6 +15,7 @@ require_once "TagadelicTagTest.php";
  *   to its own Test.
  */
 class TagadelicTagMethodsTest extends TagadelicTagTest {
+
   /**
    * @covers TagadelicTag::getId
    */

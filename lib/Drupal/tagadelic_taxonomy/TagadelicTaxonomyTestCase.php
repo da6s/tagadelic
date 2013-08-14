@@ -1,5 +1,12 @@
 <?php
+
+/**
+ * @file
+ * Contains Drupal\tagadelic_taxonomy\Tests\TagadelicTaxonomyTestCase.
+ */
+
 class TagadelicTaxonomyTestCase extends DrupalWebTestCase {
+
   protected $vocabulary;
   protected $tags  = array();
   protected $nodes = array();

@@ -1,6 +1,11 @@
 <?php
 
-require_once "TagadelicTagTest.php";
+/**
+ * @file
+ * Contains Drupal\tagadelic\Tests\TagadelicTagToStringTest.
+ */
+
+namespace Drupal\tagadelic\Tests;
 
 /**
  * Class Tagadelictagtostringtest 

@@ -1,5 +1,12 @@
 <?php
+
+/**
+ * @file
+ * Contains Drupal\tagadelic_taxonomy\Tests\TagadelicTaxonomyAdminWebTestCase.
+ */
+
 class TagadelicTaxonomyAdminWebTestCase extends DrupalWebTestCase {
+
   private $admin_url = "admin/structure/tagadelic_taxonomy";
 
   /**
