@@ -2,10 +2,12 @@
 
 /**
  * @file
- * Contains TagadelicCloud.
+ * Contains Drupal\tagadelic\TagCloud.
  */
 
-class TagadelicCloud {
+namespace Drupal\tagadelic;
+
+class TagCloud {
 
   /**
    * An identifier for this cloud. Must be unique.
@@ -29,7 +31,7 @@ class TagadelicCloud {
   protected $steps = 6;
 
   /**
-   * Flag to indicate whether to recalculateTagWeights the tag weights.
+   * Flag to indicate whether to calculateTagWeights the tag weights.
    *
    * @var bool
    */
@@ -52,7 +54,7 @@ class TagadelicCloud {
    * @param array $tags
    *   Provide tags on building. Tags can be added later, using $this->addTag().
    *
-   * @return TagadelicCloud.
+   * @return TagCloud.
    */
   public function __construct($id, $tags = array()) {
     $this->id = $id;
@@ -74,7 +76,7 @@ class TagadelicCloud {
    * @returns Array list of tags
    */
   public function getTags() {
-    $this->recalculateTagWeights();
+    $this->calculateTagWeights();
     return $this->tags;
   }
 
@@ -96,8 +98,8 @@ class TagadelicCloud {
    * @param TagadelicDrupalWrapper $wrapper
    *   A mock Drupal instance to use for testing.
    *
-   * @return TagadelicCloud
-   *   The current instance of TagadelicCloud.
+   * @return TagCloud
+   *   The current instance of Drupal\tagadelic\TagCloud.
    */
   public function setDrupalWrapper($wrapper) {
     $this->drupalWrapper = $wrapper;
@@ -118,14 +120,14 @@ class TagadelicCloud {
   }
 
   /**
-   * Instantiate an instance of TagadelicCloud from the cache.
+   * Instantiate an instance of Drupal\tagadelic\TagCloud from the cache.
    *
    * @param int $id
-   *   The id of the TagadelicCloud instance to retrieve from the cache.
+   *   The id of the Drupal\tagadelic\TagCloud instance to retrieve from the cache.
    * @param stdObject $drupal
    *   The current Drupal instance.
    *
-   * @return TagadelicCloud
+   * @return TagCloud
    *   A new instance from the cache.
    */
   public static function fromCache($id, $drupal) {
@@ -134,9 +136,9 @@ class TagadelicCloud {
   }
 
   /**
-   * Writes the cloud to cache. Will recalculateTagWeights if needed.
+   * Writes the cloud to cache. Will calculateTagWeights if needed.
    *
-   * @return TagadelicCloud
+   * @return TagCloud
    *   The current instance.
    */
   public function toCache() {
@@ -151,8 +153,8 @@ class TagadelicCloud {
    * @param string $property
    *   The property to sort the tags on.
    *
-   * @return TagadelicCloud
-   *   The current instance of TagadelicCloud.
+   * @return TagCloud
+   *   The current instance of TagCloud.
    */
   public function sortTagsBy($property) {
     if ($property == "random") {
@@ -168,10 +170,10 @@ class TagadelicCloud {
   /**
    * Recalculates the weights of tags.
    *
-   * @return TagadelicCloud
-   *   The current instance of TagadelicCloud, for chaining?
+   * @return TagCloud
+   *   The current instance of TagCloud, for chaining?
    */
-  protected function recalculateTagWeights() {
+  protected function calculateTagWeights() {
     $tags = array();
     // Find minimum and maximum log-count.
     $min = 1e9;

@@ -2,10 +2,12 @@
 
 /**
  * @file
- * Contains TagadelicTag.
+ * Contains Drupal\tagadelic\TagadelicTag.
  */
 
-class TagadelicTag {
+namespace Drupal\tagadelic;
+
+class Tag {
 
   /**
    * Identifier of this tag.

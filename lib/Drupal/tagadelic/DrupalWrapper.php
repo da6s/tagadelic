@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * @file
+ * Contains Drupal\tagadelic\DrupalWrapper.
+ */
+
+namespace Drupal\tagadelic;
+
 /**
  * Wrapper around Drupal Core functions. 
  * 
@@ -13,15 +21,26 @@
  *   We can very easily support new and old versions of Drupal by only changing this file.
  *   And we can test properly. Stubbing becomes a tad easier this way, making our tests truly isolated.
  */
-class TagadelicDrupalWrapper {
-  /*
-   * http://api.drupal.org/api/drupal/includes!cache.inc/function/cache_get/7
+class DrupalWrapper {
+
+  /**
+   * Wrapper around cache_get().
+   *
+   * @param int $cid
+   *   The cache id.
+   * @param string $bin
+   *   The bin.
+   *
+   * @return cacheObject
+   *   Cached data.
+   *
+   * @see http://api.drupal.org/api/drupal/includes!cache.inc/function/cache_get/7
    */
   public function cache_get($cid, $bin = 'cache') {
     return cache_get($cid, $bin);
   }
 
-  /*
+  /**
    * http://api.drupal.org/api/drupal/includes!cache.inc/function/cache_set/7
    * Default $expire is different from original, NULL, since we don't have the 
    *  globals defined here.

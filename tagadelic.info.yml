@@ -1,5 +1,8 @@
 name: Tagadelic
+type: module
 description: 'Tagadelic makes weighted tag clouds from any weighted list.'
-core: 7.x
-dependencies: taxonomy
 package: "Taxonomy"
+version: VERSION
+core: 7.x
+dependencies:
+  - taxonomy
