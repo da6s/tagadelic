@@ -1,6 +1,7 @@
 name: Tagadelic Taxonomy
 description: 'Makes weighted tag clouds from "taxonomy"-tags'
 core: 8.x
-dependencies: tagadelic
 package: 'Taxonomy'
+dependencies:
+  - tagadelic
 configure: admin/config/content/tagadelic_taxonomy
