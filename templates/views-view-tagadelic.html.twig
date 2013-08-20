@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a view of Tagadelic rows.
+ *
+ * Available variables:
+ * - title: The title of this group of rows. May be empty.
+ * - rows: A list of the view's row items.
+ *   - attributes: The row's HTML attributes.
+ *   - content: The row's content.
+ *
+ * @see template_preprocess_views_view_tagadelic()
+ *
+ * @ingroup themeable
+ */
+#}
+{% if title %}
+  <h3>{{ title }}</h3>
+{% endif %}
+{% for row in rows %}
+  <div{{ row.attributes }}>
+    {{ row }}
+  </div>
+{% endfor %}
