@@ -21,7 +21,7 @@ namespace Drupal\tagadelic;
  *   We can very easily support new and old versions of Drupal by only changing this file.
  *   And we can test properly. Stubbing becomes a tad easier this way, making our tests truly isolated.
  */
-class DrupalWrapper {
+class TagadelicDrupalWrapper {
 
   /**
    * Wrapper around cache_get().

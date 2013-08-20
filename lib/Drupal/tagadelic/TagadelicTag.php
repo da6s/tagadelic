@@ -7,14 +7,16 @@
 
 namespace Drupal\tagadelic;
 
-class Tag {
+use Drupal\tagadelic\TagadelicDrupalWrapper;
+
+class TagadelicTag {
 
   /**
    * Identifier of this tag.
    *
    * @var int
    */
-  protected $id = 0;
+  protected $id = NULL;
 
   /**
    * A human readable name for this tag.
@@ -31,14 +33,14 @@ class Tag {
   protected $description = "";
 
   /**
-   * Where this tag will point to. If left empty, tag will not be linked. Can be a full url too.
+   * The internal path where the tag will link to.
    *
    * @var string
    */
-  protected $link = "";
+  public $link = "";
 
   /**
-   * Absolute count for the weight. Weight, i.e. tag-size will be extracted from this.
+   * Absolute count for the weight. Tag-size will be extracted from this.
    *
    * @var float
    */
@@ -66,16 +68,16 @@ class Tag {
   protected $drupalWrapper = NULL;
 
   /**
-   * Initalizes a new TagadelicTag.
+   * Initializes a new TagadelicTag.
    *
    * @param int $id
-   *   The identifier of this tag.
+   *   the identifier of this tag.
    * @param string $name
-   *   A human readable name describing this tag.
+   *   a human readable name describing this tag.
    * @param int $count
-   *   The count of the tag, used to calculate the weight.
+   *   the count of the tag, used to calculate the weight.
    */
-  protected function __construct($id, $name, $count) {
+  public function __construct($id, $name, $count) {
     $this->id    = $id;
     $this->name  = $name;
     if ($count != 0) {
@@ -84,9 +86,9 @@ class Tag {
   }
 
   /**
-   * Renders the Tag as an HTML link to its source.
+   * Renders the tag as HTML.
    */
-  protected function render() {
+  public function render() {
     $this->clean();
     $attributes = $options = array();
 
@@ -94,7 +96,7 @@ class Tag {
     $attributes["class"][] = $this->weight > 0 ? "level{$this->weight}" : '';
     $options["attributes"] = !empty($attributes) ? $attributes : array();
 
-    return $this->getDrupalWrapper()->l($this->name, $this->link, $options);
+    return l($this->name, $this->link, $options);
   }
 
   /**
@@ -150,9 +152,10 @@ class Tag {
   }
 
   /**
-   * Sets the optional description.
-   * A tag may have a description
-   * @param $description String a description
+   * Sets the description.
+   *
+   * @param string $description
+   *   A description of the tag.
    */
   protected function setDescription($description) {
     $this->description = $description;
@@ -163,9 +166,9 @@ class Tag {
    *
    * @param string $link
    *   A link to a resource that represents the tag. e.g. a listing with all
-   *   things tagged with Tag, or the article that represents the tag.
+   *   things tagged with TagadelicTag, or the article that represents the tag.
    */
-  protected function setLink($link) {
+  public function setLink($link) {
     $this->link = $link;
   }
 
@@ -178,7 +181,7 @@ class Tag {
    * @return TagadelicTag
    *   The current instance of TagadelicTag.
    */
-  protected function setWeight($weight) {
+  public function setWeight($weight) {
     $this->weight = $weight;
     return $this;
   }
@@ -187,7 +190,7 @@ class Tag {
    * Sets $this->drupalWrapper to an instance of TagadelicDrupalWrapper.
    *
    * @param TagadelicDrupalWrapper $wrapper
-   *   An instance of TagadelicDrupalWrapper.
+   *   An instance of DrupalWrapper.
    *
    * @return TagadelicTag
    *   The current instance of TagadelicTag.
@@ -203,9 +206,9 @@ class Tag {
    * @return TagadelicDrupalWrapper
    *   An instance of TagadelicDrupalWrapper.
    */
-  protected function getDrupalWrapper() {
+  public function getDrupalWrapper() {
     if (empty($this->drupalWrapper)) {
-      $this->setDrupalWrapper(new TagaDelicDrupalWrapper());
+      $this->setDrupalWrapper(new TagadelicDrupalWrapper());
     }
     return $this->drupalWrapper;
   }
@@ -223,7 +226,7 @@ class Tag {
   /**
    * Calculates a more evenly distributed value.
    */
-  protected function distributed() {
+  public function distributed() {
     return log($this->count);
   }
 
@@ -234,7 +237,7 @@ class Tag {
     if ($this->isDirty) {
       $this->name = $this->getDrupalWrapper()->check_plain($this->name);
       $this->description = $this->getDrupalWrapper()->check_plain($this->description);
-      $this->forceClean();
+      $this->setDirty(TRUE);
     }
   }
 
