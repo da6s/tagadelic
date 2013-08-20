@@ -10,19 +10,21 @@ namespace Drupal\tagadelic\Plugin\views\style;
 use Drupal\views\Plugin\views\style\StylePluginBase;
 use Drupal\Component\Annotation\Plugin;
 use Drupal\Core\Annotation\Translation;
-use Drupal\tagadelic\Tag;
+use Drupal\tagadelic\TagadelicTag;
 use Drupal\tagadelic\TagadelicTagCloud;
 
 /**
  * Provides a Tagadelic views style plugin.
+ *
+ * @ingroup views_style_plugins
  *
  * @Plugin(
  *   id = "tagadelic",
  *   title = @Translation("Tagadelic"),
  *   help = @Translation("Generate a tag cloud based on a views results."),
  *   theme = "views_view_tagadelic",
- *   module = "tagadelic",
- *   display_types = {"normal"}
+ *   display_types = {"normal"},
+ *   module = "tagadelic"
  * )
  */
 class Tagadelic extends StylePluginBase {
@@ -106,15 +108,16 @@ class Tagadelic extends StylePluginBase {
     }
 
     $tags = array();
-
     // Iterate over each rendered views result row.
     foreach ($this->view->result as $row) {
-      $new_tag = new Tag($row->taxonomy_term_data_node_tid, $row->taxonomy_term_data_node_name, $row->taxonomy_term_data_node_tid_1);
-      $new_tag->setLink('taxonomy/term/' . $row->taxonomy_term_data_node_tid);
-      $tags[] = $new_tag;
+      // Create a new TagadelicTag instance for each row.
+      $tag = new TagadelicTag($row->taxonomy_term_data_node_tid, $row->taxonomy_term_data_node_name, $row->taxonomy_term_data_node_tid_1);
+      // Set the path to which the term will link to when it's displayed.
+      $tag->setLink('taxonomy/term/' . $row->taxonomy_term_data_node_tid);
+      $tags[] = $tag;
     }
 
-    $cloud = new TagadelicTagCloud("Tagadelic", $tags);
+    $cloud = new TagadelicTagCloud($this->view->storage->id(), $tags);
 
     $rows = array();
     foreach ($cloud->getTags() as $tag) {
