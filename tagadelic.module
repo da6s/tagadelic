@@ -4,3 +4,19 @@
  * @file
  * Contains tagadelic.module.
  */
+
+/**
+ * Implements hook_library_info().
+ */
+function tagadelic_library_info() {
+  $path = drupal_get_path('module', 'tagadelic');
+  $libraries['tagadelic.module'] = array(
+    'title' => 'Tagadelic base',
+    'version' => VERSION,
+    'css' => array(
+      "$path/css/tagadelic.module.css"
+    ),
+  );
+}
+
+
