@@ -1,29 +1,19 @@
 <?php
+
 /**
- * @file tagadelic.module
- * Library to build tagclouds.
- * @author Bèr Kessels <ber@webschuur.com>
- * @link http://berk.es
+ * @file tagadelic_taxonomy.module
  */
 
 /**
  * Implements hook_menu().
- * @see hook_menu()
  */
 function tagadelic_taxonomy_menu() {
-  $items['tagadelic_taxonomy'] = array(
-    'title' => 'Tag Cloud',
-    'page callback' => 'tagadelic_taxonomy_cloud',
-    'page arguments' => array('60'),
-    'access arguments' => array("access content"),
-    'expanded' => TRUE,
-  );
-  # Admin pages
   $items['admin/structure/tagadelic_taxonomy'] = array(
-    'title' => 'Tag Cloud',
-    'page callback' => 'tagadelic_taxonomy_admin',
-    'access arguments' => array("administer site configuration"),
+    'route_name' => 'tagadelic_taxonomy.settings',
+    'title' => 'Tagadelic Taxonomy',
+    'description' => 'Administer tagadelic_taxonomy.',
   );
+
   return $items;
 }
 

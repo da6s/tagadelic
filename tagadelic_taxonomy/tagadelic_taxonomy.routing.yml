@@ -1,0 +1,7 @@
+tagadelic_taxonomy.settings:
+  path: 'admin/structure/tagadelic_taxonomy'
+  defaults:
+    _form: '\Drupal\tagadelic_taxonomy\Form\TagadelicTaxonomySettingsForm'
+    _title: 'Tagadelic Taxonomy'
+  requirements:
+    _permission: 'administer tagadelic_taxonomy'
