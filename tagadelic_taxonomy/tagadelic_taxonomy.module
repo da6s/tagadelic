@@ -5,6 +5,17 @@
  */
 
 /**
+ * Implements hook_permission().
+ */
+function tagadelic_taxonomy_permission() {
+  return array(
+    'administer tagadelic_taxonomy' => array(
+      'title' => t('Administer tagadelic_taxonomy'),
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function tagadelic_taxonomy_menu() {
