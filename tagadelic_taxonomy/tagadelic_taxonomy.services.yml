@@ -1,0 +1,4 @@
+services:
+  plugin.manager.tagadelic_taxonomy.enabled_vocabs:
+    class: Drupal\tagadelic_taxonomy\TagCloudManager
+    arguments: ['@container.namespaces', '@cache.cache', '@language_manager', '@module_handler']
